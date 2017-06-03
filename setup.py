@@ -27,13 +27,22 @@
 
 from __future__ import absolute_import
 
+import setuptools
+
 from release import setup
 import sys
 
 
 install_requires = ['cryptography>=1.2', 'six']
-if sys.version_info < (3, 4):
-    install_requires.append('enum34')
+extras_require = {
+    'u2f_server': ['WebOb'],
+}
+
+if int(setuptools.__version__.split(".", 1)[0]) < 18:
+    if sys.version_info[0:2] < (3, 4):
+        install_requires.append("enum34")
+else:
+    extras_require[":python_version<'3.4'"] = ["enum34"]
 
 
 setup(
@@ -47,9 +56,7 @@ setup(
     install_requires=install_requires,
     test_suite='test',
     tests_require=[],
-    extras_require={
-        'u2f_server': ['WebOb'],
-    },
+    extras_require=extras_require,
     classifiers=[
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
